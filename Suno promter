@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Suno Prompt Architect</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;500;700&display=swap');
+        
+        :root {
+            --reason-red: #c62b2b;
+            --reason-blue: #2b5ac6;
+            --reason-green: #2bc62b;
+            --reason-yellow: #c6c62b;
+            --reason-dark: #2b2b2b;
+            --reason-panel: #3a3a3a;
+            --reason-light: #4a4a4a;
+        }
+        
+        body {
+            font-family: 'Roboto Mono', monospace;
+            background-color: #1a1a1a;
+            color: #e0e0e0;
+            overflow-x: hidden;
+        }
+        
+        .reason-module {
+            background: linear-gradient(145deg, var(--reason-panel), var(--reason-dark));
+            border: 1px solid #555;
+            border-radius: 6px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4);
+            padding: 15px;
+            margin-bottom: 20px;
+            position: relative;
+        }
+        
+        .module-header {
+            background-color: var(--reason-dark);
+            padding: 8px 12px;
+            margin: -15px -15px 15px -15px;
+            border-top-left-radius: 6px;
+            border-top-right-radius: 6px;
+            border-bottom: 1px solid #555;
+            font-weight: bold;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .red-module { border-top: 3px solid var(--reason-red); }
+        .blue-module { border-top: 3px solid var(--reason-blue); }
+        .green-module { border-top: 3px solid var(--reason-green); }
+        .yellow-module { border-top: 3px solid var(--reason-yellow); }
+        
+        .knob {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(145deg, #555, #333);
+            border-radius: 50%;
+            position: relative;
+            display: inline-block;
+            margin: 5px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4);
+            border: 2px solid #666;
+        }
+        
+        .knob::after {
+            content: '';
+            position: absolute;
+            width: 3px;
+            height: 20px;
+            background-color: #ccc;
+            top: 5px;
+            left: 50%;
+            transform: translateX(-50%);
+            border-radius: 2px;
+        }
+        
+        .slider {
+            -webkit-appearance: none;
+            width: 100%;
+            height: 8px;
+            border-radius: 4px;
+            background: #444;
+            outline: none;
+        }
+        
+        .slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: var(--reason-red);
+            cursor: pointer;
+            box-shadow: 0 0 5px rgba(198, 43, 43, 0.7);
+        }
+        
+        .button {
+            background: linear-gradient(145deg, #555, #333);
+            border: 1px solid #666;
+            border-radius: 4px;
+            padding: 8px 15px;
+            color: #eee;
+            cursor: pointer;
+            text-align: center;
+            transition: all 0.2s;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+        }
+        
+        .button:hover {
+            background: linear-gradient(145deg, #666, #444);
+            box-shadow: 0 0 8px rgba(198, 43, 43, 0.5);
+        }
+        
+        .button:active {
+            background: linear-gradient(145deg, #444, #222);
+            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.4);
+        }
+        
+        .led {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background-color: #333;
+            display: inline-block;
+            margin-right: 5px;
+            box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.5);
+        }
+        
+        .led-on {
+            background-color: var(--reason-red);
+            box-shadow: 0 0 8px rgba(198, 43, 43, 0.8);
+        }
+        
+        .cable {
+            position: absolute;
+            background: linear-gradient(45deg, #666, #999, #666);
+            width: 6px;
+            transform-origin: 0 0;
+            z-index: 1;
+        }
+        
+        .cable-connector {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: linear-gradient(145deg, #888, #666);
+            position: absolute;
+            z-index: 2;
+            box-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
+        }
+        
+        .rack {
+            background-color: #222;
+            border: 2px solid #333;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.5);
+        }
+        
+        .stylized-text {
+            font-family: 'Roboto Mono', monospace;
+            letter-spacing: 1px;
+        }
+        
+        /* Animation für pulsierende Kabel */
+        @keyframes pulse {
+            0% { opacity: 0.6; }
+            50% { opacity: 1; }
+            100% { opacity: 0.6; }
+        }
+        
+        .pulse {
+            animation: pulse 2s infinite;
+        }
+        
+        /* Grid für die Rack-Module */
+        .rack-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+        }
+        
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .rack-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body class="min-h-screen p-4 md:p-8">
+    <div class="container mx-auto">
+        <header class="text-center mb-8">
+            <h1 class="text-3xl md:text-4xl font-bold mb-2 stylized-text">§µñØ Prømpt @rch!tect</h1>
+            <p class="text-lg md:text-xl">Prøfess!øn€ller Prømpt-Bu!ld€r für §µñØ @! !m Prøpe!!€rh€@d R€@§øn 6.0-D€§!gn</p>
+        </header>
+        
+        <div class="rack rounded-lg p-4 md:p-6">
+            <div class="rack-grid">
+                <!-- Genre Selector Module -->
+                <div class="reason-module red-module">
+                    <div class="module-header">
+                        <span>G€nr€ §€l€ctør</span>
+                        <div class="flex">
+                            <div class="led led-on"></div>
+                            <div class="led"></div>
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-2 gap-4">
+                        <select class="bg-gray-800 text-white p-2 rounded border border-gray-600">
+                            <option>Røck</option>
+                            <option>Pøp</option>
+                            <option>H!p-Høp</option>
+                            <option>€l€ctrøn!c</option>
+                            <option>J@zZ</option>
+                            <option>Cl@§§!c@l</option>
+                        </select>
+                        <select class="bg-gray-800 text-white p-2 rounded border border-gray-600">
+                            <option>@mb!€nt</option>
+                            <option>!nstrum€nt@l</option>
+                            <option>Vøc@l</option>
+                            <option>€xP€r!m€nt@l</option>
+                        </select>
+                    </div>
+                    <div class="mt-4">
+                        <div class="flex justify-between mb-1">
+                            <span>§€cønd@ry G€nr€ M!x</span>
+                            <span>25%</span>
+                        </div>
+                        <input type="range" min="0" max="100" value="25" class="slider">
+                    </div>
+                    <div class="cable-connector" style="right: -6px; bottom: 30px;"></div>
+                    <div class="cable" style="height: 80px; transform: rotate(45deg); right: -30px; bottom: 30px;"></div>
+                </div>
+                
+                <!-- Parameter Matrix Module -->
+                <div class="reason-module blue-module">
+                    <div class="module-header">
+                        <span>P@r@m€t€r M@tr!x</span>
+                        <div class="flex">
+                            <div class="led led-on"></div>
+                        </div>
+                    </div>
+                    <div class="mb-4">
+                        <div class="flex justify-between mb-1">
+                            <span>BPM</span>
+                            <span>120</span>
+                        </div>
+                        <input type="range" min="30" max="240" value="120" class="slider">
+                    </div>
+                    <div class="mb-4">
+                        <div class="flex justify-between mb-1">
+                            <span>D@u€r (§€k.)</span>
+                            <span>60</span>
+                        </div>
+                        <input type="range" min="5" max="120" value="60" class="slider">
+                    </div>
+                    <div class="grid grid-cols-2 gap-4">
+                        <select class="bg-gray-800 text-white p-2 rounded border border-gray-600">
+                            <option>C M@jør</option>
+                            <option>D M!nør</option>
+                            <option>€ M@jør</option>
+                            <option>F# M!nør</option>
+                        </select>
+                        <div class="flex items-center">
+                            <span class="mr-2">Kømpl€x!t@t</span>
+                            <div class="knob"></div>
+                        </div>
+                    </div>
+                    <div class="cable-connector" style="right: -6px; top: 60px;"></div>
+                    <div class="cable" style="height: 100px; transform: rotate(-45deg); right: -50px; top: 50px;"></div>
+                </div>
+                
+                <!-- Instrument Selector Module -->
+                <div class="reason-module green-module">
+                    <div class="module-header">
+                        <span>!nstrum€nt €n§€mbl€</span>
+                        <div class="flex">
+                            <div class="led"></div>
+                            <div class="led led-on"></div>
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-2 gap-3">
+                        <div class="flex items-center">
+                            <input type="checkbox" class="mr-2" checked>
+                            <span>Gu!t@r</span>
+                        </div>
+                        <div class="flex items-center">
+                            <input type="checkbox" class="mr-2">
+                            <span>§ynth</span>
+                        </div>
+                        <div class="flex items-center">
+                            <input type="checkbox" class="mr-2" checked>
+                            <span>B@§§</span>
+                        </div>
+                        <div class="flex items-center">
+                            <input type="checkbox" class="mr-2">
+                            <span>Drüm§</span>
+                        </div>
+                        <div class="flex items-center">
+                            <input type="checkbox" class="mr-2">
+                            <span>Vøc@l§</span>
+                        </div>
+                        <div class="flex items-center">
+                            <input type="checkbox" class="mr-2" checked>
+                            <span>P!@nø</span>
+                        </div>
+                    </div>
+                    <div class="mt-4">
+                        <div class="button text-center">W€!t€r€ !nstrum€nt€</div>
+                    </div>
+                </div>
+                
+                <!-- Lyric Editor Module -->
+                <div class="reason-module yellow-module">
+                    <div class="module-header">
+                        <span>Lyr!c €d!tør</span>
+                        <div class="flex">
+                            <div class="led led-on"></div>
+                        </div>
+                    </div>
+                    <textarea 
+                        id="lyricInput" 
+                        class="w-full h-32 bg-gray-800 text-white p-3 rounded border border-gray-600" 
+                        placeholder="G!b D€!n€n T€xt h!€r €!n..."
+                    ></textarea>
+                    <div class="flex justify-between mt-2">
+                        <span id="charCount">0/500 Z€!ch€n</span>
+                        <span class="stylized-text" id="stylizedText"></span>
+                    </div>
+                    <div class="mt-4">
+                        <div class="button text-center" onclick="stylizeText()">T€xt §tyl!§!€r€n</div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- AI Experiment Module -->
+            <div class="reason-module red-module mt-6">
+                <div class="module-header">
+                    <span>@! €xP€r!m€nt</span>
+                    <div class="flex">
+                        <div class="led led-on"></div>
+                        <div class="led"></div>
+                        <div class="led"></div>
+                    </div>
+                </div>
+                <div class="mb-4">
+                    <div class="flex justify-between mb-1">
+                        <span>Kr€@t!v!t@t§l€v€l</span>
+                        <span>5</span>
+                    </div>
+                    <input type="range" min="1" max="10" value="5" class="slider">
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div class="button text-center">Løg!§ch</div>
+                    <div class="button text-center">@ußg€wøg€n</div>
+                    <div class="button text-center">@b§tr@kt</div>
+                </div>
+                <div class="mt-4 p-3 bg-gray-800 rounded border border-gray-700">
+                    <p class="text-center">"D€@th M€t@l + K!nd€rchør"</p>
+                </div>
+                <div class="cable-connector" style="left: 50%; bottom: -6px;"></div>
+                <div class="cable pulse" style="height: 50px; transform: rotate(-90deg); left: 50%; bottom: -40px;"></div>
+            </div>
+            
+            <!-- Prompt Visualizer Module -->
+            <div class="reason-module blue-module mt-10">
+                <div class="module-header">
+                    <span>Prømpt V!§u@l!z€r</span>
+                    <div class="flex">
+                        <div class="led led-on"></div>
+                        <div class="led led-on"></div>
+                    </div>
+                </div>
+                <div class="p-4 bg-gray-800 rounded border border-gray-700 mb-4">
+                    <p id="promptOutput">D€!n g€n€r!€rt€r Prømpt €r§ch€!nt h!€r...</p>
+                </div>
+                <div class="grid grid-cols-2 gap-4">
+                    <div class="button text-center" onclick="generatePrompt()">Prømpt G€n€r!€r€n</div>
+                    <div class="button text-center" onclick="copyPrompt()">!n Zw!§ch€n@bl@t</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Funktion zum Ersetzen von Buchstaben mit Sonderzeichen
+        function replaceAlphabet(text) {
+            const replacements = {
+                'A': '@', 'a': '@',
+                'E': 'Ǝ', 'e': 'Ǝ',
+                'I': '!', 'i': '!',
+                'O': 'Ø', 'o': 'Ø',
+                'S': '$', 's': '$',
+                'U': 'Ü', 'u': 'Ü',
+                'X': '×', 'x': '×',
+                'Y': '¥', 'y': '¥'
+            };
+            
+            return text.replace(/[aeiosuxyAEIOSUXY]/g, match => replacements[match]);
+        }
+        
+        // Funktion zum Stilisieren des Textes
+        function stylizeText() {
+            const input = document.getElementById('lyricInput');
+            const output = document.getElementById('stylizedText');
+            
+            if (input.value) {
+                output.textContent = replaceAlphabet(input.value);
+            }
+        }
+        
+        // Zeichenzähler für die Texteingabe
+        document.getElementById('lyricInput').addEventListener('input', function() {
+            const charCount = document.getElementById('charCount');
+            const count = this.value.length;
+            charCount.textContent = `${count}/500 Z€!ch€n`;
+            
+            if (count > 500) {
+                charCount.classList.add('text-red-500');
+            } else {
+                charCount.classList.remove('text-red-500');
+            }
+        });
+        
+        // Funktion zum Generieren des Prompts
+        function generatePrompt() {
+            const promptOutput = document.getElementById('promptOutput');
+            const lyrics = document.getElementById('lyricInput').value;
+            const stylized = lyrics ? replaceAlphabet(lyrics) : "K€!n€ Lyr!c$ €!ng€g€b€n";
+            
+            const prompt = `€rZ€ug€ €!n Mu$!$§tü¢k !m $tyl vøn: Røck m!t €!n€r Pr!$€ Øf 25% @mb!€nt. 
+BPM: 120, D@u€r: 60 §€kund€n, !n C M@jør. 
+!nstrum€nt!€rung: Gu!t@r, B@§§, P!@nø. 
+Kr€@t!v!t@t§l€v€l: 5. 
+Lyr!c$: "${stylized}"`;
+            
+            promptOutput.textContent = prompt;
+        }
+        
+        // Funktion zum Kopieren des Prompts
+        function copyPrompt() {
+            const promptText = document.getElementById('promptOutput').textContent;
+            navigator.clipboard.writeText(promptText).then(() => {
+                alert('Prømpt !n$ Zw!$ch€n@bl@t køP!€rt!');
+            });
+        }
+        
+        // Initialisierung bei Laden der Seite
+        document.addEventListener('DOMContentLoaded', function() {
+            // Setze erste Beispiele
+            document.getElementById('lyricInput').value = "Gebe hier deine Lyrics ein und sie werden automatisch stylisiert";
+            stylizeText();
+            generatePrompt();
+        });
+    </script>
+</body>
+</html>
