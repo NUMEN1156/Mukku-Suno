@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SonoSphere – Das Universum deiner Kreativität</title>
+    <style>
+        :root {
+            --primary: #6e44ff;
+            --secondary: #b892ff;
+            --accent: #ff44a7;
+            --dark: #1a1a2e;
+            --darker: #0d0d1a;
+            --light: #e2d9ff;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, var(--darker) 0%, var(--dark) 100%);
+            color: var(--light);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        header {
+            text-align: center;
+            padding: 40px 0;
+            background: rgba(0, 0, 0, 0.4);
+            border-radius: 20px;
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at center, transparent 10%, var(--darker) 90%);
+            opacity: 0.6;
+        }
+        
+        h1 {
+            font-size: 3.5rem;
+            margin-bottom: 10px;
+            background: linear-gradient(45deg, var(--primary), var(--accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            position: relative;
+        }
+        
+        .tagline {
+            font-size: 1.2rem;
+            opacity: 0.8;
+            margin-bottom: 20px;
+            position: relative;
+        }
+        
+        .main-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+        
+        .feature-card {
+            background: rgba(30, 30, 50, 0.6);
+            border-radius: 15px;
+            padding: 25px;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            border: 1px solid rgba(110, 68, 255, 0.3);
+        }
+        
+        .feature-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(45deg, rgba(110, 68, 255, 0.1) 0%, rgba(184, 146, 255, 0.1) 100%);
+            z-index: -1;
+        }
+        
+        .feature-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(110, 68, 255, 0.3);
+        }
+        
+        .feature-title {
+            font-size: 1.5rem;
+            margin-bottom: 15px;
+            color: var(--secondary);
+            display: flex;
+            align-items: center;
+        }
+        
+        .feature-icon {
+            margin-right: 10px;
+            font-size: 1.8rem;
+        }
+        
+        .feature-list {
+            list-style-type: none;
+        }
+        
+        .feature-list li {
+            margin-bottom: 10px;
+            padding-left: 25px;
+            position: relative;
+        }
+        
+        .feature-list li::before {
+            content: '♫';
+            position: absolute;
+            left: 0;
+            color: var(--accent);
+        }
+        
+        .demo-area {
+            background: rgba(0, 0, 0, 0.4);
+            border-radius: 15px;
+            padding: 30px;
+            margin: 40px 0;
+            text-align: center;
+            border: 1px solid rgba(255, 68, 167, 0.3);
+        }
+        
+        .demo-title {
+            font-size: 2rem;
+            margin-bottom: 20px;
+            color: var(--secondary);
+        }
+        
+        .input-area {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        
+        textarea {
+            background: rgba(30, 30, 50, 0.8);
+            border: 1px solid var(--primary);
+            border-radius: 10px;
+            padding: 15px;
+            color: var(--light);
+            font-size: 1rem;
+            resize: none;
+            height: 120px;
+        }
+        
+        button {
+            background: linear-gradient(45deg, var(--primary), var(--accent));
+            color: white;
+            border: none;
+            border-radius: 50px;
+            padding: 12px 25px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+        
+        button:hover {
+            transform: scale(1.05);
+            box-shadow: 0 5px 15px rgba(255, 68, 167, 0.4);
+        }
+        
+        .output-area {
+            background: rgba(30, 30, 50, 0.8);
+            border-radius: 10px;
+            padding: 20px;
+            min-height: 150px;
+            text-align: left;
+            margin-top: 20px;
+            border: 1px solid var(--secondary);
+        }
+        
+        footer {
+            text-align: center;
+            padding: 30px 0;
+            opacity: 0.7;
+            font-size: 0.9rem;
+        }
+        
+        .pulse {
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+        
+        .stars {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+        }
+        
+        .star {
+            position: absolute;
+            background: white;
+            border-radius: 50%;
+            animation: twinkle linear infinite;
+        }
+        
+        @keyframes twinkle {
+            0%, 100% { opacity: 0.2; }
+            50% { opacity: 1; }
+        }
+        
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2.5rem;
+            }
+            
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="stars" id="stars"></div>
+    
+    <div class="container">
+        <header>
+            <h1>SonoSphere</h1>
+            <p class="tagline">Das Universum deiner Kreativität</p>
+            <p>Ein vollständiges Ökosystem für mühelose musikalische und visuelle Kreationen</p>
+        </header>
+        
+        <div class="main-content">
+            <div class="feature-card">
+                <h2 class="feature-title"><span class="feature-icon">🎵</span> Der Alles-Könner-Editor</h2>
+                <ul class="feature-list">
+                    <li>Sprachsteuerung & Gedankenlese-Technologie</li>
+                    <li>Multimodaler Input (Bilder, Texte, Audio)</li>
+                    <li>Echtzeit-Kollaboration mit Kreativen weltweit</li>
+                </ul>
+            </div>
+            
+            <div class="feature-card">
+                <h2 class="feature-title"><span class="feature-icon">🎶</span> Die Unendliche Klangbibliothek</h2>
+                <ul class="feature-list">
+                    <li>Jeder Stil, jede Epoche, jede Nische</li>
+                    <li>Stimm-Generator 2.0 mit unbegrenzten Möglichkeiten</li>
+                    <li>"Klang-Erbe" Integration für persönliche Sounds</li>
+                </ul>
+            </div>
+            
+            <div class="feature-card">
+                <h2 class="feature-title"><span class="feature-icon">🎨</span> Der Cross-Media-Kreator</h2>
+                <ul class="feature-list">
+                    <li>Automatischer Music-Video-Generator</li>
+                    <li>Intelligenter Album-Cover-Designer</li>
+                    <li>Social-Media-Snippet-Maschine</li>
+                </ul>
+            </div>
+            
+            <div class="feature-card">
+                <h2 class="feature-title"><span class="feature-icon">🤖</span> Der Allwissende Produktions-Assistent</h2>
+                <ul class="feature-list">
+                    <li>Intuitive Mixing & Mastering mit Sprachsteuerung</li>
+                    <li>KI-gestützter Feedback-Loop</li>
+                    <li>Rechtssicherheit & nahtlose Veröffentlichung</li>
+                </ul>
+            </div>
+            
+            <div class="feature-card">
+                <h2 class="feature-title"><span class="feature-icon">🌌</span> Dein Persönlicher Raum</h2>
+                <ul class="feature-list">
+                    <li>"Ideen-Stream" für Inspiration und Remixe</li>
+                    <li>"Der Inkubator" für deine unfertigen Ideen</li>
+                    <li>KI-gestützte Vorschläge für unerwartete Verbindungen</li>
+                </ul>
+            </div>
+        </div>
+        
+        <div class="demo-area">
+            <h2 class="demo-title">Demo: Der Maestro Editor</h2>
+            <p>Beschreibe eine Stimmung oder lade ein Bild hoch, und der Maestro wird eine musikalische Inspiration generieren.</p>
+            
+            <div class="input-area">
+                <textarea id="moodInput" placeholder="Beschreibe eine Stimmung (z.B. 'Wie ein Herbsttag, an dem man an erste Liebe denkt')"></textarea>
+                <button id="generateBtn" class="pulse">Musikalische Inspiration generieren</button>
+            </div>
+            
+            <div class="output-area" id="output">
+                <p>Deine musikalische Inspiration wird hier erscheinen...</p>
+            </div>
+        </div>
+    </div>
+    
+    <footer>
+        <p>SonoSphere – Die Brücke zwischen deiner Vorstellungskraft und vollendeter Kunst</p>
+        <p>© 2023 SonoSphere. Alle Rechte vorbehalten.</p>
+    </footer>
+
+    <script>
+        // Hintergrundsterne erstellen
+        const stars = document.getElementById('stars');
+        for (let i = 0; i < 150; i++) {
+            const star = document.createElement('div');
+            star.classList.add('star');
+            star.style.width = `${Math.random() * 3}px`;
+            star.style.height = star.style.width;
+            star.style.left = `${Math.random() * 100}%`;
+            star.style.top = `${Math.random() * 100}%`;
+            star.style.animationDuration = `${2 + Math.random() * 5}s`;
+            stars.appendChild(star);
+        }
+        
+        // Demo-Funktionalität
+        document.getElementById('generateBtn').addEventListener('click', function() {
+            const mood = document.getElementById('moodInput').value;
+            const output = document.getElementById('output');
+            
+            if (!mood) {
+                output.innerHTML = '<p>Bitte beschreibe zuerst eine Stimmung oder lade ein Bild hoch.</p>';
+                return;
+            }
+            
+            // Ladeanimation
+            output.innerHTML = '<p>Analysiere deine Eingabe... <span class="pulse">✨</span></p>';
+            
+            // Simuliere eine Verzögerung für die "KI-Verarbeitung"
+            setTimeout(() => {
+                const responses = [
+                    `<p>Zu "${mood}" passt:</p>
+                     <ul>
+                         <li><strong>Stil:</strong> Melancholischer Neo-Klassik-Pop</li>
+                         <li><strong>Tempo:</strong> 72 BPM</li>
+                         <li><strong>Instrumente:</strong> Sanftes Klavier, Cello, leichte elektronische Texturen</li>
+                         <li><strong>Stimmung:</strong> Nostalgisch, träumerisch, leicht bittersüß</li>
+                     </ul>
+                     <p>Möchtest du mit dieser Inspiration ein Projekt beginnen?</p>`,
+                     
+                    `<p>Basierend auf "${mood}":</p>
+                     <ul>
+                         <li><strong>Stil:</strong> Atmospheric Drum and Bass mit Ambient-Elementen</li>
+                         <li><strong>Tempo:</strong> 174 BPM</li>
+                         <li><strong>Instrumente:</strong> Weite Pad-Flächen, komplexe Schlagzeugmuster, subbasierender Bass</li>
+                         <li><strong>Stimmung:</strong> Aufbruchstimmung, energetisch aber dennoch reflektierend</li>
+                     </ul>
+                     <p>Ich habe bereits 3 passende Samples in der Klangbibliothek gefunden!</p>`,
+                     
+                    `<p>Für "${mood}" schlage ich vor:</p>
+                     <ul>
+                         <li><strong>Stil:</strong> Ethno-Trip-Hop mit sphärischen Gesangselementen</li>
+                         <li><strong>Tempo:</strong> 85 BPM</li>
+                         <li><strong>Instrumente:</strong> Hang Drum, Tabla, synthetische Basslines, mehrstimmiger Gesang</li>
+                         <li><strong>Stimmung:</strong> Meditativ, erdend aber gleichzeitig transzendent</li>
+                     </ul>
+                     <p>Diese Inspiration wurde von 3 anderen Nutzern geteilt - möchtest du zusammenarbeiten?</p>`
+                ];
+                
+                const randomResponse = responses[Math.floor(Math.random() * responses.length)];
+                output.innerHTML = randomResponse;
+            }, 2000);
+        });
+        
+        // Sprachaufnahme-Funktionalität (nur als Demo)
+        let isRecording = false;
+        
+        function toggleRecording() {
+            isRecording = !isRecording;
+            const btn = document.getElementById('recordBtn');
+            
+            if (isRecording) {
+                btn.innerHTML = '🎤 Aufnahme stoppen';
+                btn.style.background = 'linear-gradient(45deg, var(--accent), #ff6b6b)';
+                // Hier würde echte Aufnahmelogik stehen
+            } else {
+                btn.innerHTML = '🎤 Sprachaufnahme starten';
+                btn.style.background = 'linear-gradient(45deg, var(--primary), var(--accent))';
+                // Aufnahme stoppen und verarbeiten
+            }
+        }
+    </script>
+</body>
+</html>
